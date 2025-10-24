@@ -10,6 +10,8 @@ namespace r {
 
 struct Shop final {
 };
+struct Neon final {
+};
 struct Player final {
 };
 struct Velocity final : public Vec3f {
