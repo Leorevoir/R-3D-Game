@@ -27,8 +27,6 @@ i32 main(void)
         ))
 
         .add_systems<
-            r::Startup::create_shops,
-            r::Startup::create_neons,
             r::Startup::create_player,
             r::Startup::create_inputs
         >(r::Schedule::STARTUP)

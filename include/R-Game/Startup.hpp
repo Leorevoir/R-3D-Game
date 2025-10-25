@@ -12,15 +12,6 @@ namespace r {
 
 namespace Startup {
 
-void create_shops(ecs::Commands &commands, ecs::ResMut<Meshes> meshes);
-
-void create_neons(
-    ecs::Commands &commands,
-    ecs::ResMut<Meshes> meshes,
-    ecs::ResMut<Shaders> shaders,
-    ecs::Res<core::FrameTime> frame_time
-);
-
 void create_player(ecs::Commands &commands);
 void create_inputs(ecs::ResMut<InputMap> input_map);
 
