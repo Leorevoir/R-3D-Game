@@ -3,6 +3,8 @@
 #include <R-Engine/Plugins/DefaultPlugins.hpp>
 #include <R-Engine/Plugins/WindowPlugin.hpp>
 
+#include <Gwent/Board/Background.hpp>
+
 /**
  * private
  */
@@ -16,17 +18,27 @@ static const r::WindowPluginConfig g_window_config
 };
 
 /**
+ * static helpers
+ */
+
+static inline void main_systems_background(r::Application &app)
+{
+    app.add_systems<r::startup::background>(r::Schedule::STARTUP)
+       .add_systems<r::render::background>(r::Schedule::RENDER_2D)
+       .add_systems<r::shutdown::background>(r::Schedule::SHUTDOWN);
+}
+
+/**
 * public
 */
 
 i32 main(void)
 {
-    r::Application{}
+    r::Application app;
 
-        .add_plugins(r::DefaultPlugins{}.set(g_window_config))
+    app.add_plugins(r::DefaultPlugins{}.set(r::WindowPlugin{g_window_config}));
 
-        .add_systems<
-        >(r::Schedule::STARTUP)
+    main_systems_background(app);
 
-        .run();
+    app.run();
 }
