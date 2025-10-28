@@ -11,7 +11,7 @@ class Default final : public PluginGroup
     public:
         Default();
 
-        void build(Application &app);
+        void build(Application &app) override;
 };
 
 }// namespace gwent

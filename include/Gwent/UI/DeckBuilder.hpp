@@ -32,6 +32,21 @@ struct DeckBuilderState final {
         PanelScroll selected_panel;
 };
 
+enum class StatType {
+    TotalCountValue,
+    UnitCountValue,
+    SpecialCountValue,
+    HeroCountValue,
+    TotalCountLabel,
+    UnitCountLabel,
+    SpecialCountLabel,
+    HeroCountLabel
+};
+
+struct StatText {
+        StatType type;
+};
+
 }// namespace gwent
 
 }// namespace r

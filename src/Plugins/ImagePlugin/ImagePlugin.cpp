@@ -3,6 +3,7 @@
 #include <R-Engine/Application.hpp>
 #include <R-Engine/ECS/Query.hpp>
 
+#include <Gwent/UI/RenderLayers.hpp>
 #include <Gwent/UI/Style.hpp>
 
 namespace {
@@ -67,7 +68,11 @@ static void unload_textures_system(r::ecs::ResMut<r::gwent::ImageManager> image_
 void r::gwent::ImagePlugin::build(r::Application &app)
 {
     app.insert_resource(ImageManager{})
+        .add_systems<background_rendering_system>(Schedule::RENDER_2D)
+            .in_set<__BackgroundSet>()
+
         .add_systems<image_rendering_system>(Schedule::RENDER_2D)
-        .add_systems<background_rendering_system>(Schedule::RENDER_2D).before<image_rendering_system>()
+            .in_set<__UISet>()
+
         .add_systems<unload_textures_system>(Schedule::SHUTDOWN);
 }

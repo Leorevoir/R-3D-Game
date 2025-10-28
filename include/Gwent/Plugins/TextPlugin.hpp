@@ -6,10 +6,6 @@ namespace r {
 
 namespace gwent {
 
-struct Text final {
-        std::string content;
-};
-
 class TextPlugin : public Plugin
 {
     public:

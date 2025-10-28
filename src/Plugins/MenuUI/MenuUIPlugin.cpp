@@ -8,8 +8,10 @@
 #include <R-Engine/Plugins/InputPlugin.hpp>
 
 #include <Gwent/Card/Cards.hpp>
+
 #include <Gwent/UI/DeckBuilder.hpp>
 #include <Gwent/UI/Style.hpp>
+#include <Gwent/UI/Text.hpp>
 
 #include <cmath>
 
@@ -31,8 +33,64 @@ static inline const std::string get_card_path(const std::string &faction, const 
     return r::path::get("assets/cards/" + faction + "_" + std::string(filename) + ".jpg");
 }
 
+static const struct {
+        const std::string content;
+        const r::gwent::StatType type;
+        const r::Color color;
+        const f32 font_size = 24.f;
+} g_text_elements[] = {
+    {
+        .content = "Total cards in deck",
+        .type = r::gwent::StatType::TotalCountLabel,
+        .color = {130, 115, 95, 255}
+    },
+    {
+        .content = "0",
+        .type = r::gwent::StatType::TotalCountValue,
+        .color = {182, 142, 70, 255},
+        .font_size = 28.f
+    },
+    {
+        .content = "Number of Unit Cards",
+        .type = r::gwent::StatType::UnitCountLabel,
+        .color = {130, 115, 95, 255}
+    },
+    {
+        .content = "0",
+        .type = r::gwent::StatType::UnitCountValue,
+        .color = {182, 142, 70, 255},
+        .font_size = 28.f
+    },
+    {
+        .content = "Special Cards",
+        .type = r::gwent::StatType::SpecialCountLabel,
+        .color = {130, 115, 95, 255}
+    },
+    {
+        .content = "0",
+        .type = r::gwent::StatType::SpecialCountValue,
+        .color = {182, 142, 70, 255},
+        .font_size = 28.f
+    },
+    {
+        .content = "Hero Cards",
+        .type = r::gwent::StatType::HeroCountLabel,
+        .color = {130, 115, 95, 255}
+    },
+    {
+        .content = "0", 
+        .type = r::gwent::StatType::HeroCountValue,
+        .color = {182, 142, 70, 255},
+        .font_size = 28.f
+    }
+};
+
 /**
  * systems
+ */
+
+/**
+ * startup
  */
 
 static void startup_spawn_all_cards(r::ecs::Commands &commands)
@@ -60,7 +118,29 @@ static void startup_spawn_all_cards(r::ecs::Commands &commands)
     }
 }
 
-static void handle_scrolling_input(
+static void startup_spawn_all_text(r::ecs::Commands &commands) {
+    float y_offset = -100.f;
+
+    for (const auto &text_data : g_text_elements) {
+        commands.spawn(
+            r::gwent::Text{ .content = text_data.content },
+            r::gwent::Style{ .color = text_data.color, .font_size = text_data.font_size },
+            r::gwent::StatText{ .type = text_data.type },
+            r::gwent::TextLayout{
+                .pivot = { 0.5f, 0.0f },
+                .relative_position = { 0.5f, 0.5f },
+                .offset = { 0.f, y_offset }
+            }
+        );
+        y_offset += text_data.font_size + 10.f;
+    }
+}
+
+/**
+ * update
+ */
+
+static void update_scrolling_input(
     r::ecs::Res<r::UserInput> input,
     r::ecs::Res<r::gwent::WindowSize> window_size,
     r::ecs::ResMut<r::gwent::DeckBuilderState> scroll_state
@@ -83,6 +163,31 @@ static void handle_scrolling_input(
     scroll_state.ptr->selected_panel.target_offset = std::max(0.f, scroll_state.ptr->selected_panel.target_offset);
 }
 
+static void update_deck_builder_stats(
+    r::ecs::Query<r::ecs::Ref<r::gwent::GwentCard>, r::ecs::Ref<r::gwent::CardPanel>> card_query,
+    r::ecs::Query<r::ecs::Mut<r::gwent::Text>, r::ecs::Ref<r::gwent::StatText>> text_query
+) {
+    struct DeckStats { u32 total=0, units=0, specials=0, heroes=0; } stats;
+
+    for (const auto &[gwent_card, panel] : card_query) {
+        if (panel.ptr->current_panel == r::gwent::CardPanel::Panel::SELECTED) {
+            ++stats.total;
+            const auto card_db_entry = r::gwent::find_card(gwent_card.ptr->id);
+            if (card_db_entry.deck == r::gwent::DeckFaction::Special) ++stats.specials; else ++stats.units;
+            if (card_db_entry.ability.find("hero") != std::string_view::npos) ++stats.heroes;
+        }
+    }
+    for (const auto &[text, stat_marker] : text_query) {
+        switch (stat_marker.ptr->type) {
+            case r::gwent::StatType::TotalCountValue:   text.ptr->content = std::to_string(stats.total); break;
+            case r::gwent::StatType::UnitCountValue:    text.ptr->content = std::to_string(stats.units); break;
+            case r::gwent::StatType::SpecialCountValue: text.ptr->content = std::to_string(stats.specials); break;
+            case r::gwent::StatType::HeroCountValue:    text.ptr->content = std::to_string(stats.heroes); break;
+            default: break;
+        }
+    }
+}
+
 static void update_smooth_scrolling(
     r::ecs::ResMut<r::gwent::DeckBuilderState> scroll_state,
     r::ecs::Res<r::core::FrameTime> time
@@ -96,7 +201,7 @@ static void update_smooth_scrolling(
     selected.current_offset = std::lerp(selected.current_offset, selected.target_offset, dt * selected.scroll_speed);
 }
 
-static void handle_card_clicking(
+static void update_card_clicking(
     r::ecs::Res<r::UserInput> input,
     r::ecs::Query<r::ecs::Ref<r::gwent::Style>, r::ecs::Mut<r::gwent::CardPanel>> query
 ) noexcept
@@ -131,11 +236,10 @@ static void update_card_positions(
 ) noexcept
 {
     const f32 window_width = window_size.ptr->current.x;
-    const f32 window_height = window_size.ptr->current.y;
     const f32 card_width = window_width * g_card_width_relative;
     const f32 card_height = card_width * g_card_aspect_ratio;
     const f32 padding = window_width * g_padding_relative;
-    const f32 half_screen = window_width / 2.f;
+    const f32 content_width_per_panel = (g_cards_per_row * card_width) + ((g_cards_per_row > 1 ? g_cards_per_row - 1 : 0) * padding);
 
     u32 available_idx = 0;
     u32 selected_idx = 0;
@@ -146,14 +250,15 @@ static void update_card_positions(
         f32 scroll_offset;
 
         if (panel.ptr->current_panel == r::gwent::CardPanel::Panel::AVAILABLE) {
-            index_in_panel = available_idx;
-            ++available_idx;
-            initial_offset = {padding, padding};
+            index_in_panel = available_idx++;
+            initial_offset = {padding, padding}; 
             scroll_offset = scroll_state.ptr->available_panel.current_offset;
-        } else {
-            index_in_panel = selected_idx;
-            ++selected_idx;
-            initial_offset = {half_screen + padding, padding};
+        } else { // Panel::SELECTED
+            index_in_panel = selected_idx++;
+            
+            const f32 right_panel_start_x = window_width - content_width_per_panel - padding;
+            
+            initial_offset = {right_panel_start_x, padding};
             scroll_offset = scroll_state.ptr->selected_panel.current_offset;
         }
 
@@ -180,9 +285,12 @@ static void update_card_positions(
 void r::gwent::MenuUIPlugin::build(r::Application &app)
 {
     app.insert_resource(r::gwent::DeckBuilderState{})
-        .add_systems<startup_spawn_all_cards>(r::Schedule::STARTUP)
-        .add_systems<handle_scrolling_input>(r::Schedule::UPDATE)
-        .add_systems<update_smooth_scrolling>(r::Schedule::UPDATE)
-        .add_systems<handle_card_clicking>(r::Schedule::UPDATE)
-        .add_systems<update_card_positions>(r::Schedule::UPDATE);
+       .add_systems<startup_spawn_all_cards, startup_spawn_all_text>(r::Schedule::STARTUP)
+       .add_systems<
+            update_scrolling_input,
+            update_smooth_scrolling,
+            update_card_clicking,
+            update_card_positions,
+            update_deck_builder_stats
+        >(r::Schedule::UPDATE);
 }

@@ -13,6 +13,8 @@
 #include <Gwent/Plugins/ImagePlugin.hpp>
 #include <Gwent/Plugins/MenuUIPlugin.hpp>
 
+#include <Gwent/UI/RenderLayers.hpp>
+
 #include <R-Engine/Application.hpp>
 
 /**
@@ -53,4 +55,11 @@ r::gwent::Default::Default()
 void r::gwent::Default::build(r::Application &app)
 {
     PluginGroup::build(app);
+
+    app
+        .configure_sets<r::gwent::__UISet>(r::Schedule::RENDER_2D)
+        .after<r::gwent::__BackgroundSet>()
+
+        .configure_sets<r::gwent::__TextSet>(r::Schedule::RENDER_2D)
+        .after<r::gwent::__UISet>();
 }
