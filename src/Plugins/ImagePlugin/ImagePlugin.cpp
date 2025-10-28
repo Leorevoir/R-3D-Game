@@ -43,6 +43,4 @@ void r::gwent::ImagePlugin::build(r::Application &app)
     app.insert_resource(ImageManager{})
         .add_systems<image_rendering_system>(Schedule::RENDER_2D)
         .add_systems<unload_textures_system>(Schedule::SHUTDOWN);
-
-    r::Logger::info("ImagePlugin built and loaded successfully.");
 }

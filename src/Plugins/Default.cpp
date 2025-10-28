@@ -1,3 +1,4 @@
+#include "Gwent/Plugins/GameUIPlugin.hpp"
 #include <Gwent/Plugins/Default.hpp>
 
 #include <R-Engine/Plugins/InputPlugin.hpp>
@@ -42,6 +43,7 @@ r::gwent::Default::Default()
     add<LuaScriptingPlugin>();
     add<r::gwent::ImagePlugin>();
     add<r::gwent::BoardPlugin>();
+    // add<r::gwent::GameUIPlugin>();
 }
 
 void r::gwent::Default::build(r::Application &app)
