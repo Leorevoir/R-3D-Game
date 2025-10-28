@@ -6,8 +6,7 @@ $ILC = "`e[3m"
 $ORG = "`e[1;33m"
 $RST = "`e[0m"
 
-$PROGRAM_NAME = "r-type"
-$UNIT_TESTS_NAME = "unit_tests"
+$PROGRAM_NAME = "r-gwent"
 
 function Write-Error-Exit
 {
@@ -80,32 +79,6 @@ function Invoke-Debug
     exit 0
 }
 
-# function Invoke-TestsRun
-# {
-#     Invoke-BaseRun "-DCMAKE_BUILD_TYPE=Debug -DENABLE_DEBUG=ON -DENABLE_TESTS=ON" $UNIT_TESTS_NAME
-#
-#     Push-Location "build"
-#     try {
-#         if (Test-Path ".\$UNIT_TESTS_NAME.exe") {
-#             & ".\$UNIT_TESTS_NAME.exe"
-#         } elseif (Test-Path ".\$UNIT_TESTS_NAME") {
-#             & ".\$UNIT_TESTS_NAME"
-#         } else {
-#             Write-Error-Exit "unit tests executable not found" "$UNIT_TESTS_NAME not found in build directory"
-#         }
-#
-#         if ($LASTEXITCODE -ne 0) {
-#             Write-Error-Exit "unit tests error" "unit tests failed!"
-#         }
-#
-#         Write-Success "unit tests succeed!"
-#     }
-#     finally {
-#         Pop-Location
-#     }
-#     exit 0
-# }
-
 function Invoke-Clean
 {
     if (Test-Path "build") {
@@ -121,8 +94,6 @@ function Invoke-FClean
         "$PROGRAM_NAME.exe",
         "r-engine.exe",
         "r-engine",
-        "$UNIT_TESTS_NAME.exe",
-        "$UNIT_TESTS_NAME",
         "plugins",
         "code_coverage.txt",
         "cmake-build-debug"
@@ -134,9 +105,6 @@ function Invoke-FClean
         }
     }
 
-    Get-ChildItem -Path "." -Filter "r-engine__*" -ErrorAction SilentlyContinue | Remove-Item -Force
-    Get-ChildItem -Path "." -Filter "$UNIT_TESTS_NAME-*.profraw" -ErrorAction SilentlyContinue | Remove-Item -Force
-    Get-ChildItem -Path "." -Filter "$UNIT_TESTS_NAME.profdata" -ErrorAction SilentlyContinue | Remove-Item -Force
     Get-ChildItem -Path "." -Filter "vgcore*" -ErrorAction SilentlyContinue | Remove-Item -Force
     Get-ChildItem -Path "." -Filter "*.a" -ErrorAction SilentlyContinue | Remove-Item -Force
     Get-ChildItem -Path "." -Filter "libr*" -ErrorAction SilentlyContinue | Remove-Item -Force
@@ -159,7 +127,6 @@ ARGUMENTS:
       $scriptName [-r|-re|--re]        fclean then build all
 "@
 }
-# $scriptName [-t|-tests|--tests]  run unit tests
 
 if ($args.Count -eq 0) {
     Invoke-All
@@ -183,9 +150,6 @@ foreach ($arg in $args) {
         "^(-d|--debug)$" {
             Invoke-Debug
         }
-        # "^(-t|--tests)$" {
-        #     Invoke-TestsRun
-        # }
         "^(-r|--re)$" {
             Invoke-FClean
             Invoke-All

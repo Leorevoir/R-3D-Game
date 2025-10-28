@@ -6,7 +6,7 @@ ILC="\033[3m"
 ORG="\033[1;33m"
 RST="\033[0m"
 
-PROGRAM_NAME="r-game"
+PROGRAM_NAME="r-gwent"
 
 function _error()
 {
