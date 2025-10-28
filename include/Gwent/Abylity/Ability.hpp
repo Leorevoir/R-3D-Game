@@ -325,6 +325,16 @@ static constexpr std::array<std::pair<std::string_view, AbilityInfo>, 44> g_abil
     }
 }};
 
-} // namespace gwent
+static constexpr inline AbilityInfo find_ability(const std::string_view &key)
+{
+    for (const auto &[ability_key, ability_info] : g_abilities_map) {
+        if (ability_key == key) {
+            return ability_info;
+        }
+    }
+    return {.name = "Unknown Ability", .description = "No description available."};
+}
 
-} // namespace r
+}// namespace gwent
+
+}// namespace r

@@ -243,6 +243,28 @@ static constexpr std::array<Card, 313> g_cards_map
     Card{"Schirru", 0, Deck::Scoiatael, Row::Siege, 8, "scorch_s", "schirru", 1},
 };
 
-} // namespace gwent
+// clang-format on
 
+static constexpr inline Card find_card(const u32 id) noexcept
+{
+    for (const auto &card : g_cards_map) {
+        if (card.id == id) {
+            return card;
+        }
+    }
+    return Card{};
 }
+
+static constexpr inline Card find_card(const std::string_view &name) noexcept
+{
+    for (const auto &card : g_cards_map) {
+        if (card.name == name) {
+            return card;
+        }
+    }
+    return Card{};
+}
+
+}// namespace gwent
+
+}// namespace r
