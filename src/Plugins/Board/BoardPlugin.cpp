@@ -29,7 +29,7 @@ static void startup_background_system(r::ecs::Commands &commands, r::ecs::Res<r:
         r::gwent::Style{
             .position = {0.f, 0.f},
             .size = {window_size.ptr->current.x, window_size.ptr->current.y},
-            .color = {25, 25, 25, 255},
+            .color = {30, 30, 30, 255},
             .rotation = 0.f,
             .origin = {0.f, 0.f}
         },
