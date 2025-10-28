@@ -1,4 +1,5 @@
 #include <Gwent/Plugins/BoardPlugin.hpp>
+#include <Gwent/Plugins/ImagePlugin.hpp>
 #include <Gwent/Plugins/WindowResizePlugin.hpp>
 
 #include <R-Engine/Application.hpp>
@@ -9,46 +10,39 @@
 namespace {
 
 /**
- * private
- */
+* private
+*/
 // clang-format off
 
-struct BackgroundData{
-    ::Texture2D texture;
-    ::Color color = {25, 25, 25, 255};
-};
-
 /**
- * systems
- */
+* systems
+*/
 
-void startup_background(r::ecs::Commands &commands)
+static void startup_background_system(r::ecs::Commands &commands, r::ecs::Res<r::gwent::WindowSize> window_size)
 {
-    const std::string &path = r::path::get("assets/background/board.jpg");
+    const std::string board_path = "assets/background/board.jpg";
 
     commands.spawn(
-        BackgroundData{
-            .texture = ::LoadTexture(path.c_str()),
-        }
+        r::gwent::Image{board_path},
+        r::gwent::Style{
+            .position = {0.f, 0.f},
+            .size = {window_size.ptr->current.x, window_size.ptr->current.y},
+            .color = {25, 25, 25, 255},
+            .rotation = 0.f,
+            .origin = {0.f, 0.f}
+        },
+        r::gwent::Background{}
     );
 }
 
-void render_background(r::ecs::Query<r::ecs::Ref<BackgroundData>> &query, r::ecs::Res<r::gwent::WindowSize> window_size) noexcept
+static void update_background_size_system(
+    r::ecs::Query<r::ecs::Mut<r::gwent::Style>, r::ecs::With<r::gwent::Background>> query,
+    r::ecs::Res<r::gwent::WindowSize> window_size
+) noexcept
 {
-    static constexpr ::Vector2 origin = {0.f, 0.f};
-
-    for (const auto &[background] : query) {
-        const ::Rectangle source = {0.f, 0.f, (f32)background.ptr->texture.width, (f32)background.ptr->texture.height};
-        const ::Rectangle dest = {0.f, 0.f, window_size.ptr->current.x, window_size.ptr->current.y};
-
-        ::DrawTexturePro(background.ptr->texture, source, dest, origin, 0.f, background.ptr->color);
-    }
-}
-
-void shutdown_background(r::ecs::Query<r::ecs::Ref<BackgroundData>> &query) noexcept
-{
-    for (auto [background] : query) {
-        ::UnloadTexture(background.ptr->texture);
+    for (const auto &[style, _] : query) {
+        style.ptr->size.width = window_size.ptr->current.x;
+        style.ptr->size.height = window_size.ptr->current.y;
     }
 }
 
@@ -60,8 +54,7 @@ void shutdown_background(r::ecs::Query<r::ecs::Ref<BackgroundData>> &query) noex
 
 void r::gwent::BoardPlugin::build(r::Application &app)
 {
-    app.add_systems<startup_background>(r::Schedule::STARTUP)
-       .add_systems<render_background>(r::Schedule::RENDER_2D)
-       .add_systems<shutdown_background>(r::Schedule::SHUTDOWN);
+    app.add_systems<startup_background_system>(r::Schedule::STARTUP)
+       .add_systems<update_background_size_system>(r::Schedule::UPDATE);
 }
 
