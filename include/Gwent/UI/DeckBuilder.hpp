@@ -9,6 +9,9 @@ namespace gwent {
 
 struct Card;
 
+struct DeckBuilderUI {
+};
+
 struct GwentCard final {
         u32 id;
 };

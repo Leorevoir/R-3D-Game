@@ -25,6 +25,8 @@ struct Style {
         }
 };
 
+enum class Visibility { Visible, Hidden };
+
 }// namespace gwent
 
 }// namespace r

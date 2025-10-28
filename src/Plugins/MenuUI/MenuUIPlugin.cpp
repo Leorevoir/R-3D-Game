@@ -120,7 +120,8 @@ static void startup_spawn_all_cards(r::ecs::Commands &commands)
             },
             r::gwent::CardPanel{
                 .current_panel = r::gwent::CardPanel::Panel::AVAILABLE
-            }
+            },
+            r::gwent::DeckBuilderUI{}
         );
     }
 }
@@ -143,7 +144,8 @@ static void startup_spawn_all_text(r::ecs::Commands &commands) {
                 .pivot = { 0.5f, 0.0f },
                 .relative_position = { 0.5f, 0.5f },
                 .offset = { 0.f, y_offset }
-            }
+            },
+            r::gwent::DeckBuilderUI{}
         );
         y_offset += text_data.font_size + 10.f;
     }

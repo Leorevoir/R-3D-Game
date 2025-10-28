@@ -73,10 +73,20 @@ static void update_text_layout_system(
 }
 
 static void render_text_system(
-    const r::ecs::Query<r::ecs::Ref<r::gwent::Text>, r::ecs::Ref<r::gwent::Style>> query,
+    r::ecs::Query<
+        r::ecs::Ref<r::gwent::Text>,
+        r::ecs::Ref<r::gwent::Style>,
+        r::ecs::Optional<r::gwent::Visibility>
+    > query,
     r::ecs::Res<TextFont> font
-) noexcept {
-    for (const auto &[text, style] : query) {
+) noexcept
+{
+    for (const auto &[text, style, visibility_opt] : query) {
+
+        if (visibility_opt.ptr && *visibility_opt.ptr == r::gwent::Visibility::Hidden) {
+            continue;
+        }
+
         __draw_text(text.ptr, style.ptr, style.ptr->position, font.ptr);
     }
 }
@@ -92,7 +102,6 @@ static void shutdown_system(r::ecs::ResMut<TextFont> font_res) noexcept
         ::UnloadFont(font_res.ptr->data);
     }
 }
-
 
 } // namespace
 

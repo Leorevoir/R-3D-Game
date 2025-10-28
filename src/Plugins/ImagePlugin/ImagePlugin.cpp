@@ -21,7 +21,12 @@ static inline constexpr ::Color rl_color(const r::Color &color) noexcept
 template<typename QueryT>
 static void __image_rendering_impl(const QueryT &query, r::gwent::ImageManager *image_manager)
 {
-    for (auto [image, style, _] : query) {
+    for (auto [image, style, visibility_opt, _] : query) {
+
+        if (visibility_opt.ptr && *visibility_opt.ptr == r::gwent::Visibility::Hidden) {
+            continue;
+        }
+
         const auto *texture = image_manager->get(image.ptr->path);
 
         if (texture) {
@@ -39,7 +44,12 @@ static void __image_rendering_impl(const QueryT &query, r::gwent::ImageManager *
  */
 
 static void image_rendering_system(
-    r::ecs::Query<r::ecs::Ref<r::gwent::Image>, r::ecs::Ref<r::gwent::Style>, r::ecs::Without<r::gwent::Background>> query,
+    r::ecs::Query<
+        r::ecs::Ref<r::gwent::Image>,
+        r::ecs::Ref<r::gwent::Style>,
+        r::ecs::Optional<r::gwent::Visibility>,
+        r::ecs::Without<r::gwent::Background>
+    > query,
     r::ecs::ResMut<r::gwent::ImageManager> image_manager
 )
 {
@@ -47,7 +57,12 @@ static void image_rendering_system(
 }
 
 static void background_rendering_system(
-    r::ecs::Query<r::ecs::Ref<r::gwent::Image>, r::ecs::Ref<r::gwent::Style>, r::ecs::With<r::gwent::Background>> query,
+    r::ecs::Query<
+        r::ecs::Ref<r::gwent::Image>,
+        r::ecs::Ref<r::gwent::Style>,
+        r::ecs::Optional<r::gwent::Visibility>,
+        r::ecs::With<r::gwent::Background>
+    > query,
     r::ecs::ResMut<r::gwent::ImageManager> image_manager
 )
 {

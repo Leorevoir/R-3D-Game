@@ -264,6 +264,24 @@ static void update_card_positions(
     }
 }
 
+static void hide_deck_builder_ui(r::ecs::Commands& commands, r::ecs::Query<r::ecs::With<r::gwent::DeckBuilderUI>> query)
+{
+    r::Logger::debug("Hiding Deck Builder UI.");
+
+    for (auto it = query.begin(); it != query.end(); ++it) {
+        commands.entity(it.entity()).insert(r::gwent::Visibility::Hidden);
+    }
+}
+
+static void show_deck_builder_ui(r::ecs::Commands& commands, r::ecs::Query<r::ecs::With<r::gwent::DeckBuilderUI>> query)
+{
+    r::Logger::debug("Showing Deck Builder UI.");
+
+    for (auto it = query.begin(); it != query.end(); ++it) {
+        commands.entity(it.entity()).insert(r::gwent::Visibility::Visible);
+    }
+}
+
 }// namespace
 
 /**
@@ -290,5 +308,8 @@ void menu_ui_plugin_update_systems(r::Application &app)
 
         .add_systems<update_start_button_click>(r::Schedule::UPDATE)
             .after<update_stats_on_card_move>()
-            .run_if<r::run_conditions::in_state<r::gwent::State::ChoosingDeck>>();
+            .run_if<r::run_conditions::in_state<r::gwent::State::ChoosingDeck>>()
+
+        .add_systems<show_deck_builder_ui>(r::OnEnter{r::gwent::State::ChoosingDeck})
+        .add_systems<hide_deck_builder_ui>(r::OnExit{r::gwent::State::ChoosingDeck});
 }
