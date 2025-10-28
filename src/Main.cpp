@@ -5,6 +5,8 @@
 
 #include <Gwent/Board/Background.hpp>
 
+#include <Gwent/Card/Cards.hpp>
+
 /**
  * private
  */
