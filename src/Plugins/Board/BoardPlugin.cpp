@@ -6,7 +6,9 @@
 
 #include <R-Engine/Core/Backend.hpp>
 #include <R-Engine/Core/Filepath.hpp>
+#include <R-Engine/Core/States.hpp>
 
+#include <Gwent/States.hpp>
 #include <Gwent/UI/Style.hpp>
 
 namespace {
@@ -48,6 +50,22 @@ static void update_background_size_system(
     }
 }
 
+static void set_playing_background_color(
+    r::ecs::Query<r::ecs::Mut<r::gwent::Style>, r::ecs::With<r::gwent::Background>> query
+) noexcept {
+    for (const auto &[style, _] : query) {
+        style.ptr->color = {255, 255, 255, 255};
+    }
+}
+
+static void set_deckbuilder_background_color(
+    r::ecs::Query<r::ecs::Mut<r::gwent::Style>, r::ecs::With<r::gwent::Background>> query
+) noexcept {
+    for (const auto &[style, _] : query) {
+        style.ptr->color = {30, 30, 30, 255};
+    }
+}
+
 }
 
 /**
@@ -56,7 +74,9 @@ static void update_background_size_system(
 
 void r::gwent::BoardPlugin::build(r::Application &app)
 {
-    app.add_systems<startup_background_system>(r::Schedule::STARTUP)
-       .add_systems<update_background_size_system>(r::Schedule::UPDATE);
+    app
+        .add_systems<startup_background_system>(Schedule::STARTUP)
+        .add_systems<update_background_size_system>(Schedule::UPDATE)
+        .add_systems<set_playing_background_color>(OnEnter{State::Playing})
+        .add_systems<set_deckbuilder_background_color>(OnEnter{State::ChoosingDeck});
 }
-
