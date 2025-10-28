@@ -1,6 +1,7 @@
-#include "Gwent/Plugins/WindowResizePlugin.hpp"
 #include <Gwent/Plugins/Default.hpp>
 
+#include <Gwent/Plugins/TextPlugin.hpp>
+#include <Gwent/Plugins/WindowResizePlugin.hpp>
 #include <R-Engine/Plugins/InputPlugin.hpp>
 #include <R-Engine/Plugins/LuaScriptingPlugin.hpp>
 #include <R-Engine/Plugins/MeshPlugin.hpp>
@@ -46,6 +47,7 @@ r::gwent::Default::Default()
     add<r::gwent::ImagePlugin>();
     add<r::gwent::BoardPlugin>();
     add<r::gwent::MenuUIPlugin>();
+    add<r::gwent::TextPlugin>();
 }
 
 void r::gwent::Default::build(r::Application &app)
