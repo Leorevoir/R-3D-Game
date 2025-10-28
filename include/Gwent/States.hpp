@@ -4,7 +4,7 @@ namespace r {
 
 namespace gwent {
 
-enum class State { ChoosingDeck, Playing, EndGame };
+enum class State { ChoosingDeck, Carousel, Playing, EndGame };
 
 }
 

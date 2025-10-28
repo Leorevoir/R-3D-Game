@@ -112,8 +112,8 @@ static void update_start_button_click(
 
         if (inside_x && inside_y) {
             if (deck_stats.ptr->unit_cards >= 22) {
-                next_state.ptr->set(r::gwent::State::Playing);
-                r::Logger::info("Deck is valid! Changing state to Playing.");
+                next_state.ptr->set(r::gwent::State::Carousel);
+                r::Logger::info("Deck is valid! Changing state to Carousel.");
             } else {
                 r::Logger::warn("Deck is invalid! You need at least 22 unit cards.");
             }

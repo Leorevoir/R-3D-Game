@@ -77,6 +77,6 @@ void r::gwent::BoardPlugin::build(r::Application &app)
     app
         .add_systems<startup_background_system>(Schedule::STARTUP)
         .add_systems<update_background_size_system>(Schedule::UPDATE)
-        .add_systems<set_playing_background_color>(OnEnter{State::Playing})
+        .add_systems<set_playing_background_color>(OnEnter{State::Carousel})
         .add_systems<set_deckbuilder_background_color>(OnEnter{State::ChoosingDeck});
 }
