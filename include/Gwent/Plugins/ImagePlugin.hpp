@@ -16,6 +16,15 @@ namespace gwent {
 struct Style final {
         Vec2f position = {0.f, 0.f};
         Vec2f size = {100.f, 100.f};
+
+        inline Style operator=(const Style &other) const noexcept
+        {
+            Style result = *this;
+
+            result.position = other.position;
+            result.size = other.size;
+            return result;
+        }
 };
 
 struct Image final {
