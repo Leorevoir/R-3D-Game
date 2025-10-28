@@ -1,4 +1,4 @@
-#include "Gwent/Plugins/GameUIPlugin.hpp"
+#include "Gwent/Plugins/WindowResizePlugin.hpp"
 #include <Gwent/Plugins/Default.hpp>
 
 #include <R-Engine/Plugins/InputPlugin.hpp>
@@ -10,6 +10,7 @@
 
 #include <Gwent/Plugins/BoardPlugin.hpp>
 #include <Gwent/Plugins/ImagePlugin.hpp>
+#include <Gwent/Plugins/MenuUIPlugin.hpp>
 
 #include <R-Engine/Application.hpp>
 
@@ -41,9 +42,10 @@ r::gwent::Default::Default()
     add<MeshPlugin>();
     add<TransformPlugin>();
     add<LuaScriptingPlugin>();
+    add<r::gwent::WindowResizePlugin>();
     add<r::gwent::ImagePlugin>();
     add<r::gwent::BoardPlugin>();
-    // add<r::gwent::GameUIPlugin>();
+    add<r::gwent::MenuUIPlugin>();
 }
 
 void r::gwent::Default::build(r::Application &app)
