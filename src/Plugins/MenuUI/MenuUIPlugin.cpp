@@ -9,6 +9,8 @@
 
 #include <Gwent/Card/Cards.hpp>
 #include <Gwent/UI/DeckBuilder.hpp>
+#include <Gwent/UI/Style.hpp>
+
 #include <cmath>
 
 namespace {

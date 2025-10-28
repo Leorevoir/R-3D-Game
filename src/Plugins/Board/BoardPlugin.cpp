@@ -7,6 +7,8 @@
 #include <R-Engine/Core/Backend.hpp>
 #include <R-Engine/Core/Filepath.hpp>
 
+#include <Gwent/UI/Style.hpp>
+
 namespace {
 
 /**

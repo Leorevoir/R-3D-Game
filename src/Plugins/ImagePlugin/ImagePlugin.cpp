@@ -3,6 +3,8 @@
 #include <R-Engine/Application.hpp>
 #include <R-Engine/ECS/Query.hpp>
 
+#include <Gwent/UI/Style.hpp>
+
 namespace {
 
 /**
