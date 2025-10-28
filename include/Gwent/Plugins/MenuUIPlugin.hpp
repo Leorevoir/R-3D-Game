@@ -2,8 +2,6 @@
 
 #include <R-Engine/Plugins/Plugin.hpp>
 
-#include <Gwent/Card/Decks.hpp>
-
 namespace r {
 
 namespace gwent {
