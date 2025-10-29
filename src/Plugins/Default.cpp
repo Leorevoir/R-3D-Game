@@ -1,7 +1,5 @@
 #include <Gwent/Plugins/Default.hpp>
 
-#include <Gwent/Plugins/TextPlugin.hpp>
-#include <Gwent/Plugins/WindowResizePlugin.hpp>
 #include <R-Engine/Plugins/InputPlugin.hpp>
 #include <R-Engine/Plugins/LuaScriptingPlugin.hpp>
 #include <R-Engine/Plugins/MeshPlugin.hpp>
@@ -10,8 +8,11 @@
 #include <R-Engine/Plugins/WindowPlugin.hpp>
 
 #include <Gwent/Plugins/BoardPlugin.hpp>
+#include <Gwent/Plugins/CarouselPlugin.hpp>
 #include <Gwent/Plugins/ImagePlugin.hpp>
 #include <Gwent/Plugins/MenuUIPlugin.hpp>
+#include <Gwent/Plugins/TextPlugin.hpp>
+#include <Gwent/Plugins/WindowResizePlugin.hpp>
 
 #include <Gwent/UI/RenderLayers.hpp>
 
@@ -50,6 +51,7 @@ r::gwent::Default::Default()
     add<r::gwent::BoardPlugin>();
     add<r::gwent::MenuUIPlugin>();
     add<r::gwent::TextPlugin>();
+    add<r::gwent::CarouselPlugin>();
 }
 
 void r::gwent::Default::build(r::Application &app)
