@@ -68,7 +68,10 @@ static void update_text_layout_system(
         };
 
         style.ptr->position = base_pos - pivot_offset + layout.ptr->offset;
-        style.ptr->size = { text_size.x, text_size.y };
+        style.ptr->size = {
+            text_size.x,
+            text_size.y
+        };
     }
 }
 
