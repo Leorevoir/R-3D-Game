@@ -37,7 +37,7 @@ struct DeckBuilderState final {
         struct PanelScroll {
                 f32 target_offset = 0.f;
                 f32 current_offset = 0.f;
-                f32 scroll_speed = 15.f;
+                f32 scroll_speed = 20.f;
         };
 
         PanelScroll available_panel;
