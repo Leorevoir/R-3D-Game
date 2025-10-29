@@ -126,8 +126,9 @@ static void startup_spawn_all_cards(r::ecs::Commands &commands)
     }
 }
 
-static void startup_spawn_all_text(r::ecs::Commands &commands) {
-    float y_offset = -100.f;
+static void startup_spawn_all_text(r::ecs::Commands &commands)
+{
+    f32 y_offset = -100.f;
 
     for (const auto &text_data : g_text_elements) {
         commands.spawn(
@@ -135,7 +136,8 @@ static void startup_spawn_all_text(r::ecs::Commands &commands) {
                 .content = text_data.content
             },
             r::gwent::Style{
-                .color = text_data.color, .font_size = text_data.font_size
+                .color = text_data.color,
+                .font_size = text_data.font_size
             },
             r::gwent::StatText{
                 .type = text_data.type
