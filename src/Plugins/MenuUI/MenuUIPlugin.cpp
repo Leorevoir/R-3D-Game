@@ -92,25 +92,18 @@ static const struct {
     }
 };
 
-/**
- * systems
- */
-
-/**
- * startup
- */
-
-static void startup_spawn_all_cards(r::ecs::Commands &commands)
+template<typename CardT>
+static inline void __spawn_all_cards_impl(r::ecs::Commands &commands, CardT cards, const std::string &faction)
 {
-    for (const auto &card_data : r::gwent::g_realms_cards) {
+    for (const auto &card_data : cards) {
 
         if (card_data->row == r::gwent::Row::Leader) {
             continue;
         }
-        
+
         commands.spawn(
             r::gwent::Image{
-                .path = get_card_path("realms", card_data->filename)
+                .path = get_card_path(faction, card_data->filename)
             },
             r::gwent::Style{
                 .position = {0, 0}, .size = {1, 1}
@@ -124,6 +117,22 @@ static void startup_spawn_all_cards(r::ecs::Commands &commands)
             r::gwent::DeckBuilderUI{}
         );
     }
+}
+
+/**
+ * systems
+ */
+
+/**
+ * startup
+ */
+
+static void startup_spawn_all_cards(r::ecs::Commands &commands)
+{
+    __spawn_all_cards_impl<decltype(r::gwent::g_special_cards)>(commands, r::gwent::g_special_cards, "special");
+    __spawn_all_cards_impl<decltype(r::gwent::g_weather_cards)>(commands, r::gwent::g_weather_cards, "weather");
+    __spawn_all_cards_impl<decltype(r::gwent::g_neutral_cards)>(commands, r::gwent::g_neutral_cards, "neutral");
+    __spawn_all_cards_impl<decltype(r::gwent::g_realms_cards)>(commands, r::gwent::g_realms_cards, "realms");
 }
 
 static void startup_spawn_all_text(r::ecs::Commands &commands)
