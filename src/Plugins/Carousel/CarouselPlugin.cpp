@@ -73,7 +73,7 @@ static void startup_carousel_system(r::ecs::Commands &commands, r::ecs::Query<r:
 
     __shuffle(selected_deck);
 
-    auto carousel_state = CarouselState{};
+    auto carousel_state = r::gwent::CarouselState{};
     for (size_t i = 0; i < 10; ++i) {
         carousel_state.hand.push_back(selected_deck[i]);
     }
@@ -131,7 +131,7 @@ static void update_carousel_card_positions_system(
 static void handle_card_swap_system(
     r::ecs::Commands &commands,
     r::ecs::Res<r::UserInput> input,
-    r::ecs::ResMut<CarouselState> carousel_state,
+    r::ecs::ResMut<r::gwent::CarouselState> carousel_state,
     r::ecs::Query<r::ecs::Ref<r::gwent::Style>, r::ecs::With<CarouselCard>> query
 )
 {
@@ -196,12 +196,9 @@ static void handle_confirm_button_click_system(
 
 static void cleanup_carousel_system(r::ecs::Commands &commands, r::ecs::Query<r::ecs::With<ConfirmButton>> button_query)
 {
-    r::Logger::debug("Cleaning up carousel UI.");
-
     for (auto it = button_query.begin(); it != button_query.end(); ++it) {
         commands.despawn(it.entity());
     }
-    commands.remove_resource<CarouselState>();
 }
 
 }// anonymous namespace
