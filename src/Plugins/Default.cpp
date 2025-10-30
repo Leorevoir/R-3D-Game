@@ -1,5 +1,6 @@
 #include <Gwent/Plugins/Default.hpp>
 
+#include <Gwent/Plugins/GameUIPlugin.hpp>
 #include <R-Engine/Plugins/InputPlugin.hpp>
 #include <R-Engine/Plugins/LuaScriptingPlugin.hpp>
 #include <R-Engine/Plugins/MeshPlugin.hpp>
@@ -52,6 +53,7 @@ r::gwent::Default::Default()
     add<r::gwent::MenuUIPlugin>();
     add<r::gwent::TextPlugin>();
     add<r::gwent::CarouselPlugin>();
+    add<r::gwent::GameUIPlugin>();
 }
 
 void r::gwent::Default::build(r::Application &app)
