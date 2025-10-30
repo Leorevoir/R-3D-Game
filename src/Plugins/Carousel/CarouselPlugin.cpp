@@ -34,15 +34,6 @@ struct CarouselCard final {
 struct ConfirmButton final {
 };
 
-/**
- * @brief Resource to manage the state of the carousel/mulligan phase.
- */
-struct CarouselState final {
-        std::vector<r::ecs::Entity> hand;
-        std::vector<r::ecs::Entity> deck;
-        u8 swaps_left = 2;
-};
-
 static inline void __shuffle(std::vector<r::ecs::Entity> &entities)
 {
     std::random_device rd;
